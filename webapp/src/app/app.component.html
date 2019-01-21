@@ -1,0 +1,88 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+</div>
+
+<p-tabView (onChange)="handleChange($event)">
+  <p-tabPanel header="Find fares">
+    <div>
+      <p-messages [(value)]="msgs"></p-messages>
+
+      <h3>Origin</h3>
+      <p-autoComplete [(ngModel)]="origin" [suggestions]="filteredOrigins" (completeMethod)="filterOrigins($event)"
+                      [size]="30" field="name"
+                      [minLength]="3" [dropdown]="true">
+        <ng-template let-origin pTemplate="item">
+          {{origin.code}} - {{origin.name}}
+        </ng-template>
+      </p-autoComplete>
+
+
+      <h3>Destination</h3>
+      <p-autoComplete [(ngModel)]="destination" [suggestions]="filteredDestination"
+                      (completeMethod)="filterDestination($event)"
+                      [size]="30" field="name"
+                      [minLength]="3" [dropdown]="true">
+        <ng-template let-destination pTemplate="item">
+          {{destination.code}} - {{destination.name}}
+        </ng-template>
+      </p-autoComplete>
+
+      <h3>Currency</h3>
+      <p-dropdown [options]="currencies" [(ngModel)]="currency"></p-dropdown>
+
+      <br/>
+
+      <p-button label="Search" (onClick)="search($event)"></p-button>
+
+      <br>
+
+      <div *ngIf="fare">
+        Flight from <b>{{fare.origin.name}}</b> ({{fare.origin.coordinates.latitude}}
+        , {{fare.origin.coordinates.longitude}})
+        to <b>{{fare.destination.name}}</b> ({{fare.destination.coordinates.latitude}}
+        , {{fare.destination.coordinates.longitude}})
+        costs {{fare.amount}} {{fare.currency}}
+      </div>
+
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Airports">
+    <p-table [value]="airports" #dt
+             [lazy]="true"
+             (onLazyLoad)="loadAirports($event)"
+             [paginator]="true"
+             [rows]="25"
+             [totalRecords]="totalRecords"
+    >
+      <ng-template pTemplate="caption">
+        <div style="text-align: right">
+          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" placeholder="Search Airport" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Code</th>
+          <th>Name</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-airport>
+        <tr>
+          <td>{{airport.code}}</td>
+          <td>{{airport.name}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+  </p-tabPanel>
+  <p-tabPanel header="Statistics" selec>
+    <p-chart type="pie" [data]="data"></p-chart>
+  </p-tabPanel>
+</p-tabView>
+
+<router-outlet></router-outlet>
+

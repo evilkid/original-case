@@ -21,7 +21,15 @@ apply plugin: 'io.spring.dependency-management'
 
 jar {
     baseName = 'destination-finder-client'
-    version =  '0.1.0'
+    version = '0.1.0'
+}
+
+processResources.dependsOn('webapp:build')
+
+processResources {
+    from ('webapp/dist/webapp') {
+        into 'static'
+    }
 }
 
 repositories {
@@ -37,5 +45,6 @@ dependencies {
     }
     implementation("org.springframework.boot:spring-boot-starter-jetty")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-hateoas")
     testCompile("junit:junit")
 }

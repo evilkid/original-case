@@ -1,1 +1,3 @@
+include 'webapp'
+
 rootProject.name = 'original-case'
